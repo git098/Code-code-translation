@@ -1,0 +1,8 @@
+pandas
+torch
+datasets==2.17.1
+transformers==4.39.3
+evaluate==0.4.0
+sacrebleu==2.4.1
+numpy<2
+tf-keras

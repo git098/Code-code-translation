@@ -1,0 +1,46 @@
+# General
+.DS_Store
+.env
+.venv
+env/
+venv/
+*.pyc
+*.pyo
+__pycache__/
+.ipynb_checkpoints/
+
+# Python
+*.egg-info/
+dist/
+build/
+*.so
+*.pyd
+
+# Hugging Face
+# Exclude large model checkpoints and caches
+fine-tuned-model/
+debug-model/
+logs/
+runs/
+wandb/
+hf_cache/
+.cache/
+.huggingface/
+
+# Data (if not part of the core dataset)
+# If you have very large raw data files, you might want to ignore them
+# and provide instructions on how to download them.
+# For now, we're including the small debug data and the main data files.
+
+# macOS specific
+.DS_Store
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
