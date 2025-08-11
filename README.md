@@ -1,143 +1,197 @@
-# Code-to-Code Translation: Java to C#
+# Code Translation: Java to C#
 
-## Overview
+This project fine-tunes Salesforce's **CodeT5-base** model for translating Java code snippets into C# code. CodeT5 is a pre-trained encoder-decoder transformer specifically designed for code understanding and generation tasks. The project leverages the Hugging Face Transformers library to fine-tune this model on Java-to-C# translation pairs.
 
-This project implements a deep learning model for translating Java code snippets into C# code. It leverages the powerful Hugging Face Transformers library, specifically fine-tuning a pre-trained encoder-decoder model for this sequence-to-sequence task.
+## 🌟 Features
 
-Through a rigorous debugging and optimization process, this project demonstrates a robust pipeline for code translation, addressing common challenges such as memory management, model initialization, and data handling.
+- **CodeT5 Fine-tuning**: Fine-tunes Salesforce's CodeT5-base model, a specialized transformer for code tasks
+- **Memory Optimization**: Incorporates mixed-precision training (fp16) and gradient checkpointing for efficient memory usage
+- **Robust Data Handling**: Flexible data loading with support for debug subsets and automatic fallback mechanisms
+- **Comprehensive Evaluation**: Integrated BLEU score calculation for quantitative translation quality assessment
+- **Debugging Workflow**: Dedicated debug mode for quick issue diagnosis and resolution
+- **Version Stability**: Pinned dependencies ensure reproducibility and compatibility
 
-## Key Features
-
-*   **Java to C# Translation:** Translates Java code into functionally equivalent C# code.
-*   **`Salesforce/codet5-base` Model:** Utilizes a state-of-the-art pre-trained encoder-decoder model specifically designed for code-related tasks, ensuring better initial performance and training stability compared to encoder-only models.
-*   **Memory Optimization:** Incorporates techniques like mixed-precision training (`fp16`) and gradient checkpointing to manage memory usage during training, crucial for larger models and datasets.
-*   **Robust Data Handling:** Includes a flexible data loading mechanism that can handle full datasets or small debug subsets, and automatically reuses training data for validation/testing if dedicated files are not present.
-*   **Comprehensive Evaluation:** Integrates BLEU score calculation for quantitative evaluation of translation quality.
-*   **Debugging Workflow:** Features a dedicated debug mode and utility scripts to quickly diagnose and resolve training and data-related issues.
-*   **Version Stability:** Dependencies are pinned to specific versions to ensure reproducibility and prevent compatibility problems.
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 . # Project Root
 ├── src/
-│   ├── data_handler.py         # Handles dataset loading and preprocessing
-│   ├── train.py                # Main script for model training
-│   ├── run_evaluation.py       # Script for evaluating trained models
-│   └── check_data_alignment.py # Utility to verify data file line counts
+│   ├── data_handler.py         # Dataset loading and preprocessing
+│   ├── train.py               # Main training script
+│   ├── run_evaluation.py      # Model evaluation script
+│   └── check_data_alignment.py # Data verification utility
 ├── data/
-│   └── debug/                  # Small subset of data for quick debugging
-├── fine-tuned-model/           # Directory where the trained model is saved
-├── train.java-cs.txt.java      # Java training data
-├── train.java-cs.txt.cs        # C# training data
-├── valid.java-cs.txt.java      # Java validation data
-├── valid.java-cs.txt.cs        # C# validation data
-├── test.java-cs.txt.java       # Java test data
-├── test.java-cs.txt.cs         # C# test data
-├── requirements.txt            # Python dependencies
-├── roadmap.md                  # Detailed development roadmap and debugging log
-├── README.md                   # Project overview and instructions
-└── LICENSE                     # Project license
+│   └── debug/                 # Small debug dataset
+├── fine-tuned-model/          # Trained model output directory
+├── train.java-cs.txt.java     # Java training data
+├── train.java-cs.txt.cs       # C# training data
+├── valid.java-cs.txt.java     # Java validation data
+├── valid.java-cs.txt.cs       # C# validation data
+├── test.java-cs.txt.java      # Java test data
+├── test.java-cs.txt.cs        # C# test data
+├── requirements.txt           # Python dependencies
+├── roadmap.md                 # Development roadmap and debugging log
+└── LICENSE                    # MIT License
 ```
 
-## Setup and Installation
+## 🚀 Getting Started
 
-1.  **Clone the repository:**
+### Prerequisites
 
-    ```bash
-    git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git
-    cd YOUR_REPOSITORY_NAME
-    ```
-    *(Remember to replace `YOUR_USERNAME` and `YOUR_REPOSITORY_NAME` with your actual GitHub details.)*
+- Python 3.9+
+- CUDA-compatible GPU (recommended for training)
+- Git
 
-2.  **Create a Conda Virtual Environment (Recommended):**
+### Installation
 
-    ```bash
-    conda create -n code_translation_env python=3.9
-    conda activate code_translation_env
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/git098/Code-code-translation.git
+   cd Code-code-translation
+   ```
 
-3.  **Install Dependencies:**
+2. **Create a virtual environment (recommended):**
+   ```bash
+   conda create -n code_translation_env python=3.9
+   conda activate code_translation_env
+   ```
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-4.  **Download Datasets:**
+4. **Verify data alignment:**
+   ```bash
+   python src/check_data_alignment.py
+   ```
 
-    Ensure the `train.java-cs.txt.java`, `train.java-cs.txt.cs`, `valid.java-cs.txt.java`, `valid.java-cs.txt.cs`, `test.java-cs.txt.java`, and `test.java-cs.txt.cs` datasets are placed in the root directory of the project.
+## 🔧 Usage
 
-    *(Note: For debugging purposes, a small `data/debug` subset is also included.)*
+### Training
 
-## Usage
-
-### 1. Check Data Alignment (Optional but Recommended)
-
-Before training, you can verify that your Java and C# data files are correctly aligned (have the same number of lines):
-
-```bash
-python src/check_data_alignment.py
-```
-
-### 2. Train the Model
-
-To train the model on the full dataset:
+Train the model on the full dataset:
 
 ```bash
 python src/train.py \
-  --data_dir . \
-  --output_dir ./fine-tuned-model \
-  --num_epochs 32 \
-  --batch_size 2 \
-  --eval_steps 500 \
-  --learning_rate 5e-5 \
-  --gradient_checkpointing
+    --data_dir . \
+    --output_dir ./fine-tuned-model \
+    --num_epochs 32 \
+    --batch_size 2 \
+    --eval_steps 500 \
+    --learning_rate 5e-5 \
+    --gradient_checkpointing
 ```
 
-*   **`--data_dir .`**: Specifies that the main datasets are in the current directory.
-*   **`--output_dir ./fine-tuned-model`**: Where the trained model checkpoints will be saved.
-*   **`--num_epochs`**: Number of training epochs.
-*   **`--batch_size`**: Batch size for training and evaluation.
-*   **`--eval_steps`**: Evaluate every N steps.
-*   **`--learning_rate`**: Learning rate for the optimizer.
-*   **`--gradient_checkpointing`**: Enables memory-saving gradient checkpointing.
+#### Training Parameters
 
-*(Note: `--fp16` is not included in this command as it may cause issues on non-CUDA devices like macOS MPS. If you have a CUDA GPU, you can add `--fp16` for faster training.)*
+- `--data_dir .`: Location of training datasets
+- `--output_dir ./fine-tuned-model`: Model checkpoint save directory
+- `--num_epochs`: Number of training epochs
+- `--batch_size`: Training and evaluation batch size
+- `--eval_steps`: Evaluation frequency (every N steps)
+- `--learning_rate`: Optimizer learning rate
+- `--gradient_checkpointing`: Enable memory-efficient gradient checkpointing
+- `--fp16`: Enable mixed-precision training (CUDA GPUs only)
 
-### 3. Evaluate the Trained Model
+### Evaluation
 
-To evaluate the fine-tuned model on an example Java code snippet:
+Evaluate the trained model:
 
 ```bash
 python src/run_evaluation.py
 ```
 
-This script is configured to load the model from `./fine-tuned-model` and translate a hardcoded Java example. You can modify `src/run_evaluation.py` to test different inputs or integrate it with your test dataset for a comprehensive evaluation.
+This script loads the model from `./fine-tuned-model` and translates a sample Java code snippet. Modify the script to test different inputs or integrate with your test dataset.
 
-### 4. Debugging Training Issues (Advanced)
+### Debug Mode
 
-If you encounter issues during full training, you can use the debug mode to quickly test if the core training loop is functional by overfitting on a tiny dataset:
+For quick testing and debugging:
 
 ```bash
 python src/train.py \
-  --data_dir ./data/debug \
-  --output_dir ./debug-model \
-  --num_epochs 10 \
-  --batch_size 1 \
-  --eval_steps 10 \
-  --learning_rate 1e-3
+    --data_dir ./data/debug \
+    --output_dir ./debug-model \
+    --num_epochs 10 \
+    --batch_size 1 \
+    --eval_steps 10 \
+    --learning_rate 1e-3
 ```
 
-This will train a model on the small `data/debug` dataset. You can then evaluate it using `python src/run_evaluation.py` (after temporarily changing `model_path` in `run_evaluation.py` to `./debug-model`).
+This trains on a small debug dataset to verify the training pipeline functionality.
 
-## Requirements
+## 📊 Model Architecture
 
-See `requirements.txt` for a full list of pinned dependencies.
+The project fine-tunes **Salesforce's CodeT5-base** (`Salesforce/codet5-base`), a specialized pre-trained encoder-decoder transformer model designed specifically for code understanding and generation tasks. 
 
-## License
+### Why CodeT5?
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+CodeT5 offers several advantages for code translation:
 
-## Contributing
+- **Code-specific pre-training**: Unlike general-purpose language models, CodeT5 was pre-trained on massive code datasets with code-aware objectives
+- **Identifier-aware**: The model understands programming language identifiers, keywords, and syntax patterns
+- **Encoder-decoder architecture**: Perfect for sequence-to-sequence tasks like code translation
+- **Multi-language support**: Pre-trained on multiple programming languages including Java and C#
+- **Strong baseline performance**: Provides excellent starting weights for fine-tuning on specific translation tasks
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+### Fine-tuning Process
+
+This project takes the pre-trained CodeT5-base model and fine-tunes it on parallel Java-C# code pairs to specialize it for Java-to-C# translation. The fine-tuning process adapts the model's weights to better understand the specific syntactic and semantic differences between Java and C#.
+
+## 💾 Data Format
+
+The training data consists of parallel Java and C# code files:
+- `.java` files contain Java source code
+- `.cs` files contain corresponding C# translations
+- Each line represents a code snippet pair
+- Files must have matching line counts
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+1. **Memory Issues**: Use `--gradient_checkpointing` and reduce `--batch_size`
+2. **CUDA Compatibility**: Remove `--fp16` flag for non-CUDA devices (e.g., macOS MPS)
+3. **Data Alignment**: Run `python src/check_data_alignment.py` to verify data consistency
+
+### Debug Workflow
+
+1. Use debug mode with small dataset
+2. Check data alignment and format
+3. Verify model loading and initialization
+4. Test with single batch training
+
+## 📈 Performance
+
+The model evaluation includes:
+- BLEU score calculation for translation quality
+- Comprehensive testing on held-out test sets
+- Memory usage monitoring during training
+- Training loss and validation metrics tracking
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Hugging Face Transformers](https://huggingface.co/transformers/) for the transformer architecture
+- [Salesforce CodeT5](https://huggingface.co/Salesforce/codet5-base) for the pre-trained model
+- The open-source community for datasets and tools
+
+## 📚 References
+
+- [CodeT5: Identifier-aware Unified Pre-trained Encoder-Decoder Models for Code Understanding and Generation](https://arxiv.org/abs/2109.00859)
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+
+---
