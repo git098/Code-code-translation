@@ -30,7 +30,6 @@ This project fine-tunes Salesforce's **CodeT5-base** model for translating Java 
 ├── test.java-cs.txt.java      # Java test data
 ├── test.java-cs.txt.cs        # C# test data
 ├── requirements.txt           # Python dependencies
-├── roadmap.md                 # Development roadmap and debugging log
 └── LICENSE                    # MIT License
 ```
 
@@ -145,21 +144,6 @@ The training data consists of parallel Java and C# code files:
 - `.cs` files contain corresponding C# translations
 - Each line represents a code snippet pair
 - Files must have matching line counts
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-1. **Memory Issues**: Use `--gradient_checkpointing` and reduce `--batch_size`
-2. **CUDA Compatibility**: Remove `--fp16` flag for non-CUDA devices (e.g., macOS MPS)
-3. **Data Alignment**: Run `python src/check_data_alignment.py` to verify data consistency
-
-### Debug Workflow
-
-1. Use debug mode with small dataset
-2. Check data alignment and format
-3. Verify model loading and initialization
-4. Test with single batch training
 
 ## 📈 Performance
 
